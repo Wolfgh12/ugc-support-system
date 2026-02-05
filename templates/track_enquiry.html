@@ -1,0 +1,506 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UGC | Track Enquiry</title>
+    <link rel="stylesheet" href="{% static 'loader.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/ugc.png' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --card: #141414;
+            --gold: #c5a059;
+            --gold-glow: rgba(197, 160, 89, 0.2);
+            --border: #222;
+            --text-muted: #888;
+            --footer-bg: #050505;
+            --success: #4caf50;
+            --user-msg: #1a1a1a;
+            --staff-msg: rgba(197, 160, 89, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+        }
+
+        .track-logo {
+            width: 70px;
+            height: auto;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 10px var(--gold-glow));
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .header h1 {
+            font-weight: 800;
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+
+        .header span { color: var(--gold); }
+        .header p { font-size: 0.95rem; color: var(--text-muted); }
+
+        .track-container {
+            background: var(--card);
+            border: 1px solid var(--border);
+            padding: 40px 30px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 650px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            color: var(--gold);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 16px;
+            background: #000;
+            border: 1px solid var(--border);
+            color: #fff;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus, textarea:focus { border-color: var(--gold); box-shadow: 0 0 10px var(--gold-glow); }
+
+        .btn-track, .btn-reply {
+            background: var(--gold);
+            color: #000;
+            border: none;
+            padding: 18px;
+            width: 100%;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.9rem;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .btn-track:hover, .btn-reply:hover { background: #e0b86d; transform: translateY(-2px); }
+
+        #resultArea {
+            display: none;
+            margin-top: 30px;
+            border-top: 1px solid var(--border);
+            padding-top: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .chat-thread {
+            margin: 25px 0;
+            text-align: left;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .message-bubble {
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            position: relative;
+            max-width: 85%;
+        }
+
+        .message-bubble.staff {
+            background: var(--staff-msg);
+            border-left: 3px solid var(--gold);
+            margin-right: auto;
+        }
+
+        .message-bubble.user {
+            background: var(--user-msg);
+            border-right: 3px solid #444;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .msg-meta {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            display: block;
+            font-weight: 700;
+        }
+
+        .msg-text { font-size: 0.9rem; line-height: 1.5; color: #ddd; }
+
+        .btn-mini-reply {
+            background: transparent;
+            border: none;
+            color: var(--gold);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+            display: inline-block;
+            opacity: 0.7;
+            transition: 0.2s;
+        }
+        .btn-mini-reply:hover { opacity: 1; text-decoration: underline; }
+
+        .user-reply-box {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--border);
+            text-align: left;
+        }
+
+        .user-reply-box h4 {
+            font-size: 0.75rem;
+            color: var(--gold);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        #replyIndicator {
+            display: none;
+            background: #000;
+            padding: 10px;
+            border-radius: 6px;
+            border-left: 2px solid var(--gold);
+            margin-bottom: 10px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            position: relative;
+        }
+        #replyIndicator span { color: #fff; font-style: italic; display: block; margin-top: 5px; }
+        
+        .cancel-reply {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            cursor: pointer;
+            color: #ff4444;
+            font-weight: bold;
+        }
+
+        .stepper { display: flex; justify-content: space-between; margin: 35px 0; position: relative; }
+        .stepper::before { content: ""; position: absolute; top: 16px; left: 10%; width: 80%; height: 2px; background: var(--border); z-index: 1; }
+        .step { position: relative; z-index: 2; text-align: center; width: 33%; }
+        .step-circle { width: 34px; height: 34px; background: #1a1a1a; border: 2px solid var(--border); border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; }
+        .step.active .step-circle { border-color: var(--gold); background: var(--gold); color: #000; box-shadow: 0 0 15px var(--gold-glow); }
+        .step.completed .step-circle { background: var(--success); border-color: var(--success); color: #fff; }
+        .step-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+
+        .ticket-info { background: #000; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: left; border-left: 4px solid var(--gold); }
+        .ticket-info p { margin: 8px 0; font-size: 0.85rem; }
+        .ticket-info strong { color: var(--gold); }
+
+        .btn-back { margin: 40px 0; display: inline-block; color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
+        .btn-back:hover { color: var(--gold); }
+
+        footer { background: var(--footer-bg); border-top: 1px solid var(--border); padding: 80px 0 40px 0; margin-top: auto; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; width: 100%; }
+        .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.2fr; gap: 50px; }
+        .footer-col h4 { color: #fff; margin-bottom: 25px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; }
+        .footer-col p { color: var(--text-muted); font-size: 0.85rem; line-height: 1.8; }
+        .footer-col ul li { margin-bottom: 12px; list-style: none; }
+        .footer-col ul li a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; transition: 0.3s; }
+        .footer-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .copyright { text-align: center; border-top: 1px solid #111; padding-top: 40px; margin-top: 40px; color: #444; font-size: 0.75rem; text-transform: uppercase; }
+
+        @media (max-width: 968px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+    </style>
+</head>
+<body>
+
+<div id="global-loader">
+    <div class="loader-ring"></div>
+    <div class="loader-text">Loading UGC</div>
+</div>
+
+<div class="main-content">
+    <div class="header">
+        <img src="{% static 'images/ugc.png' %}" alt="UGC Logo" class="track-logo">
+        <h1>Track <span>Enquiry</span></h1>
+        <p>Monitor the status of your institutional request.</p>
+    </div>
+
+    <div class="track-container">
+        <div id="searchBox">
+            <div class="input-group">
+                <label for="refNumber">Reference Number</label>
+                <input type="text" id="refNumber" placeholder="UGC-XXXXXXXX" autocomplete="off">
+            </div>
+            <button class="btn-track" onclick="trackTicket()">Locate Ticket</button>
+        </div>
+
+        <div id="resultArea">
+            <div class="ticket-info" id="ticketDetail"></div>
+
+            <div class="stepper">
+                <div class="step" id="step1"><div class="step-circle">1</div><div class="step-label">Submitted</div></div>
+                <div class="step" id="step2"><div class="step-circle">2</div><div class="step-label">Processing</div></div>
+                <div class="step" id="step3"><div class="step-circle">3</div><div class="step-label">Resolved</div></div>
+            </div>
+
+            <div class="chat-thread" id="chatThread"></div>
+
+            <div class="user-reply-box" id="userReplySection">
+                <h4>Send a Follow-up</h4>
+                
+                <div id="replyIndicator">
+                    Replying to: <span id="replyPreviewText"></span>
+                    <div class="cancel-reply" onclick="cancelReply()">✕</div>
+                </div>
+
+                <textarea id="userReplyText" placeholder="Type your message here..." rows="3" style="margin-bottom: 15px;"></textarea>
+                <button class="btn-reply" onclick="submitUserReply()">Send Message</button>
+            </div>
+
+            <button class="btn-track" style="background: transparent; border: 1px solid #333; color: #666; margin-top: 20px;" onclick="location.reload()">New Search</button>
+        </div>
+    </div>
+
+    <a href="{% url 'home' %}" class="btn-back">← Back to Helpdesk</a>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <a href="/" class="footer-logo">
+                    <img src="{% static 'images/ugc.png' %}" alt="UGC Logo" style="width: 180px; height: auto;">
+                </a>
+                <p>UGC understands Ghana's workforce dynamics, offering flexible education for corporate executives and entrepreneurs through its specialized Graduate Schools.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Academic Portals</h4>
+                <ul>
+                    <li><a href="#">Postgraduate Admissions</a></li>
+                    <li><a href="#">Graduation Portal</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="/">Support Desk</a></li>
+                    <li><a href="#">Staff Email</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Campus Location</h4>
+                <p>Christ Square, Spintex Road<br>Accra, Ghana</p>
+                <p style="margin-top: 10px; color: var(--gold);">Email: info@ugc.edu.gh</p>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2026 UNIVERSITY OF GOLD COAST (UGC). ALL RIGHTS RESERVED.
+        </div>
+    </div>
+</footer>
+
+<script>
+    let currentTicketId = null;
+    let activeParentId = null;
+    let messagesMap = {}; // Storage for full message texts
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    window.addEventListener('load', function() {
+        const loader = document.getElementById('global-loader');
+        if(loader) {
+            loader.style.opacity = '0';
+            setTimeout(() => { loader.style.display = 'none'; }, 500);
+        }
+    });
+
+    async function trackTicket() {
+        const refInput = document.getElementById('refNumber').value.trim();
+        const resultArea = document.getElementById('resultArea');
+        const searchBox = document.getElementById('searchBox');
+        const chatThread = document.getElementById('chatThread');
+
+        if (!refInput) return;
+
+        try {
+            const response = await fetch(`/track-query/?ref=${encodeURIComponent(refInput)}`);
+            const data = await response.json();
+
+            if (data.error) {
+                Swal.fire({ icon: 'error', title: 'Not Found', text: data.error, background: '#141414', color: '#fff' });
+                return;
+            }
+
+            currentTicketId = data.id; 
+            searchBox.style.display = 'none';
+            resultArea.style.display = 'block';
+
+            document.getElementById('ticketDetail').innerHTML = `
+                <p><strong>Ref ID:</strong> ${data.ref_id}</p>
+                <p><strong>Subject:</strong> ${data.subject}</p>
+                <p><strong>Status:</strong> <span style="color: #d4af37">${data.status}</span></p>
+            `;
+
+            updateStepper(data.status);
+
+            chatThread.innerHTML = ''; 
+            messagesMap = {}; // Reset map
+
+            if (data.thread && data.thread.length > 0) {
+                data.thread.forEach((msg, index) => {
+                    // Store message in map for the reply context
+                    messagesMap[msg.id] = msg.message;
+
+                    const typeClass = msg.is_staff ? 'staff' : 'user';
+                    const label = (index === 0 && !msg.is_staff) ? "Original Enquiry" : (msg.is_staff ? "UGC OFFICER" : "YOU");
+                    
+                    let parentQuote = "";
+                    if(msg.parent_id && messagesMap[msg.parent_id]) {
+                        const quoteText = messagesMap[msg.parent_id].substring(0, 60) + (messagesMap[msg.parent_id].length > 60 ? "..." : "");
+                        parentQuote = `<div style="font-size: 0.75rem; border-left: 2px solid #d4af37; padding-left: 8px; margin-bottom: 8px; opacity: 0.6; font-style: italic; background: rgba(0,0,0,0.2); padding: 5px;">
+                            Replying to: "${quoteText}"
+                        </div>`;
+                    }
+
+                    chatThread.innerHTML += `
+                        <div class="message-bubble ${typeClass}" id="msg-${msg.id}">
+                            <span class="msg-meta">${label} • ${msg.timestamp}</span>
+                            ${parentQuote}
+                            <p class="msg-text">${msg.message}</p>
+                            <button class="btn-mini-reply" onclick="setReply(${msg.id})">Reply to this</button>
+                        </div>
+                    `;
+                });
+            } else {
+                chatThread.innerHTML = `<p class="text-muted">No messages found.</p>`;
+            }
+            
+            chatThread.scrollTop = chatThread.scrollHeight;
+
+        } catch (err) {
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Server connection failed.', background: '#141414', color: '#fff' });
+        }
+    }
+
+    function setReply(id) {
+        activeParentId = id;
+        const fullText = messagesMap[id] || "";
+        const previewText = fullText.substring(0, 100) + (fullText.length > 100 ? "..." : "");
+        
+        document.getElementById('replyIndicator').style.display = 'block';
+        document.getElementById('replyPreviewText').innerText = `"${previewText}"`;
+        document.getElementById('userReplyText').focus();
+        
+        // Scroll to the reply box
+        document.getElementById('userReplySection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function cancelReply() {
+        activeParentId = null;
+        document.getElementById('replyIndicator').style.display = 'none';
+    }
+
+    function updateStepper(status) {
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('active', 'completed'));
+        const s1 = document.getElementById('step1'), s2 = document.getElementById('step2'), s3 = document.getElementById('step3');
+        if (status === 'Open') s1.classList.add('active');
+        else if (status === 'In-Progress') { s1.classList.add('completed'); s2.classList.add('active'); }
+        else if (status === 'Resolved') { s1.classList.add('completed'); s2.classList.add('completed'); s3.classList.add('active'); }
+    }
+
+    async function submitUserReply() {
+        const msgInput = document.getElementById('userReplyText');
+        const msg = msgInput.value.trim();
+        
+        if (!msg) {
+            Swal.fire({ icon: 'warning', title: 'Empty Message', text: 'Please type something.', background: '#141414', color: '#fff' });
+            return;
+        }
+
+        try {
+            const response = await fetch(`/user-reply/${currentTicketId}/`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ 
+                    'message': msg,
+                    'parent_id': activeParentId 
+                })
+            });
+
+            if (response.ok) {
+                msgInput.value = '';
+                cancelReply();
+                Swal.fire({ icon: 'success', title: 'Sent', timer: 1500, showConfirmButton: false, background: '#141414', color: '#fff' });
+                trackTicket(); 
+            } else {
+                throw new Error('Failed to send reply');
+            }
+        } catch (err) {
+            Swal.fire({ icon: 'error', title: 'Failed', text: err.message, background: '#141414', color: '#fff' });
+        }
+    }
+</script>
+</body>
+</html>

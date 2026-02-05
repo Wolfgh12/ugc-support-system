@@ -1,0 +1,61 @@
+<style>
+    /* 1. HOW IT LOOKS (CSS) */
+    #backToTopBtn {
+        position: fixed;     /* Stays in the corner when you scroll */
+        bottom: 40px;        /* Distance from bottom */
+        right: 40px;         /* Distance from right */
+        z-index: 99;         /* Stays on top of other elements */
+        border: none;        /* No border */
+        outline: none;       /* No outline */
+        background-color: #c5a059; /* Your UGC Gold */
+        color: black;        /* Arrow color */
+        cursor: pointer;     /* Mouse changes to hand */
+        padding: 15px;       /* Size of the button */
+        border-radius: 10px; /* Rounded corners */
+        display: none;       /* Hidden by default */
+        transition: 0.3s;    /* Smooth hover effect */
+        box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+
+    #backToTopBtn:hover {
+        background-color: #fff; /* Turns white when you point at it */
+    }
+
+    /* The little arrow icon */
+    .arrow {
+        border: solid black;
+        border-width: 0 3px 3px 0;
+        display: inline-block;
+        padding: 4px;
+        transform: rotate(-135deg);
+        -webkit-transform: rotate(-135deg);
+    }
+</style>
+
+<button onclick="topFunction()" id="backToTopBtn" title="Go to top">
+  <i class="arrow"></i>
+</button>
+
+<script>
+    // Get the button
+    let mybutton = document.getElementById("backToTopBtn");
+
+    // When the user scrolls down 400px from the top, show the button
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+      if (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) {
+        mybutton.style.display = "block";
+      } else {
+        mybutton.style.display = "none";
+      }
+    }
+
+    // When the user clicks on the button, scroll to the top smoothly
+    function topFunction() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+</script>

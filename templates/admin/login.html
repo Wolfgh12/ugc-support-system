@@ -1,0 +1,111 @@
+{% extends "admin/login.html" %}
+{% load static %}
+
+{% block branding %}
+<div id="site-name" style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 20px;">
+    <button id="theme-toggle" type="button" style="align-self: flex-end; background: none; border: 1px solid var(--accent); color: var(--accent); border-radius: 50%; width: 35px; height: 35px; cursor: pointer; transition: 0.3s;">
+        <span id="theme-icon">🌙</span>
+    </button>
+
+    <img src="{% static 'images/ugc.png' %}" alt="UGC Logo" style="height: 70px; width: auto; filter: drop-shadow(0px 4px 10px rgba(0,0,0,0.3));">
+    
+    <h1 style="color: var(--accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.6rem; letter-spacing: 2px; margin: 0; text-align: center;">
+        UGC ADMIN
+    </h1>
+</div>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    /* 1. Theme Variables */
+    :root {
+        --bg-color: #f4f7f6;
+        --card-bg: #ffffff;
+        --text-color: #333;
+        --accent: #c5a059;
+        --input-bg: #fff;
+        --border: #ddd;
+    }
+
+    [data-theme="dark"] {
+        --bg-color: #0a0a0a;
+        --card-bg: #141414;
+        --text-color: #ffffff;
+        --accent: #c5a059;
+        --input-bg: #000;
+        --border: #222;
+    }
+
+    /* 2. Global Styles */
+    body { 
+        background: var(--bg-color) !important; 
+        color: var(--text-color) !important; 
+        transition: background 0.4s ease;
+    }
+    
+    #header { 
+        background: var(--card-bg) !important; 
+        color: var(--accent) !important;
+        border-bottom: 2px solid var(--accent) !important;
+    }
+
+    div.breadcrumbs { display: none; }
+
+    .module { 
+        background: var(--card-bg) !important; 
+        border: 1px solid var(--border) !important; 
+        border-radius: 16px !important;
+        padding: 30px !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+    }
+
+    /* 3. Form Styling */
+    .form-row label { color: var(--text-color) !important; opacity: 0.8; font-weight: 700; }
+    
+    input[type="text"], input[type="password"] {
+        background: var(--input-bg) !important;
+        border: 1px solid var(--border) !important;
+        color: var(--text-color) !important;
+        border-radius: 8px !important;
+        padding: 10px !important;
+    }
+
+    .submit-row input {
+        background: var(--accent) !important;
+        color: #000 !important;
+        font-weight: 800 !important;
+        border-radius: 8px !important;
+        height: 45px;
+        width: 100%;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .submit-row input:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(197, 160, 89, 0.4);
+    }
+</style>
+
+<script>
+    // 4. Toggle Logic
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleBtn = document.getElementById('theme-toggle');
+        const icon = document.getElementById('theme-icon');
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+
+        // Apply initial theme
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        icon.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+
+        toggleBtn.addEventListener('click', () => {
+            let theme = document.documentElement.getAttribute('data-theme');
+            let newTheme = theme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            icon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        });
+    });
+</script>
+{% endblock %}

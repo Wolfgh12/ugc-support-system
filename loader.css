@@ -1,0 +1,47 @@
+/* --- GLOBAL PAGE LOADER STYLES --- */
+#global-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0a0a0a; /* Matches your dashboard background */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    transition: opacity 0.4s ease, visibility 0.4s;
+}
+
+.loader-ring {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(197, 160, 89, 0.1);
+    border-top: 3px solid #c5a059;
+    border-radius: 50%;
+    animation: loader-spin 0.7s linear infinite;
+}
+
+@keyframes loader-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loader-text {
+    color: #c5a059;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    letter-spacing: 4px;
+    margin-top: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* Class to fade out the loader */
+.loader-hidden {
+    opacity: 0;
+    visibility: hidden;
+
+}
+

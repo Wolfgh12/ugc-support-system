@@ -1,0 +1,93 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    /* 1. THEME VARIABLES */
+    :root {
+        --primary-bg: #f4f7f6;
+        --card-bg: #ffffff;
+        --text-main: #333333;
+        --accent: #c5a059; /* Your Gold Color */
+        --sidebar-bg: #1a1a1a;
+        --border-color: #dddddd;
+    }
+
+    [data-theme="dark"] {
+        --primary-bg: #0a0a0a;
+        --card-bg: #141414;
+        --text-main: #ffffff;
+        --accent: #c5a059;
+        --sidebar-bg: #000000;
+        --border-color: #222222;
+    }
+
+    /* 2. GLOBAL LAYOUT OVERRIDES */
+    body { background-color: var(--primary-bg) !important; color: var(--text-main) !important; transition: 0.3s; }
+    
+    #header { 
+        background: var(--sidebar-bg) !important; 
+        border-bottom: 2px solid var(--accent) !important;
+        padding: 10px 20px;
+    }
+
+    #content { background: var(--primary-bg) !important; }
+
+    /* Sidebar Styling */
+    #nav-sidebar { 
+        background: var(--sidebar-bg) !important; 
+        border-right: 1px solid var(--border-color) !important; 
+    }
+
+    .module h2, .module caption, .inline-group h2 { 
+        background: var(--accent) !important; 
+        color: #000 !important; 
+        font-weight: 800 !important; 
+        text-transform: uppercase;
+    }
+
+    /* Buttons & Links */
+    .button, input[type=submit], .submit-row a.deletelink {
+        background: var(--accent) !important;
+        color: #000 !important;
+        font-weight: 700 !important;
+        border-radius: 4px !important;
+    }
+
+    /* 3. THE TOGGLE BUTTON POSITIONING */
+    .theme-switch-wrapper {
+        display: flex;
+        align-items: center;
+        float: right;
+        margin-top: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block footer %}
+{{ block.super }}
+<script>
+    // Logic to persist the theme across all admin pages
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+
+        // Add a toggle button to the header if it doesn't exist
+        const header = document.querySelector('#user-tools');
+        if (header) {
+            const btn = document.createElement('button');
+            btn.innerHTML = currentTheme === 'dark' ? '☀️' : '🌙';
+            btn.style.cssText = "background:none; border:1px solid var(--accent); color:var(--accent); cursor:pointer; margin-left:15px; border-radius:4px;";
+            btn.onclick = function() {
+                let theme = document.documentElement.getAttribute('data-theme');
+                let newTheme = theme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                this.innerHTML = newTheme === 'dark' ? '☀️' : '🌙';
+            };
+            header.appendChild(btn);
+        }
+    });
+</script>
+{% endblock %}
