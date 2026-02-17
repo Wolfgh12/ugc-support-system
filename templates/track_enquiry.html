@@ -7,6 +7,9 @@
     <title>UGC | Track Enquiry</title>
     <link rel="stylesheet" href="{% static 'loader.css' %}">
     <link rel="icon" type="image/png" href="{% static 'images/ugc.png' %}">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
@@ -244,17 +247,79 @@
         .btn-back { margin: 40px 0; display: inline-block; color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
         .btn-back:hover { color: var(--gold); }
 
-        footer { background: var(--footer-bg); border-top: 1px solid var(--border); padding: 80px 0 40px 0; margin-top: auto; }
+        /* --- Updated Footer Styling --- */
+        footer {
+            background: #050505;
+            padding: 96px 0 32px;
+            border-top: 1px solid rgba(197, 160, 89, 0.1);
+            margin-top: auto;
+        }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; width: 100%; }
-        .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.2fr; gap: 50px; }
-        .footer-col h4 { color: #fff; margin-bottom: 25px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; }
-        .footer-col p { color: var(--text-muted); font-size: 0.85rem; line-height: 1.8; }
-        .footer-col ul li { margin-bottom: 12px; list-style: none; }
-        .footer-col ul li a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; transition: 0.3s; }
-        .footer-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-        .copyright { text-align: center; border-top: 1px solid #111; padding-top: 40px; margin-top: 40px; color: #444; font-size: 0.75rem; text-transform: uppercase; }
+        .footer-grid-new {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 48px;
+            margin-bottom: 64px;
+        }
+        .footer-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--gold);
+        }
+        .footer-text { color: #9ca3af; font-size: 0.875rem; line-height: 1.5; }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a { 
+            color: #9ca3af; 
+            text-decoration: none; 
+            font-size: 0.875rem; 
+            transition: 0.3s; 
+        }
+        .footer-links a:hover { color: var(--gold); }
+        .illuminate-gold { color: var(--gold); font-weight: 800; }
+        .social-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 40px; }
+        .social-btn {
+            background: #111;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .social-btn:hover { background: var(--gold); color: black; }
+        .footer-bottom {
+            padding-top: 32px;
+            border-top: 1px solid #111;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #6b7280;
+        }
+        .animate-beat {
+            display: inline-block;
+            animation: heartBeat 1.5s infinite;
+            color: #ff4444;
+        }
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.3); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.3); }
+            70% { transform: scale(1); }
+        }
 
-        @media (max-width: 968px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 968px) {
+            .footer-grid-new { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column; text-align: center; gap: 16px; }
+        }
     </style>
 </head>
 <body>
@@ -312,35 +377,44 @@
 
 <footer>
     <div class="container">
-        <div class="footer-grid">
-            <div class="footer-col">
-                <a href="/" class="footer-logo">
-                    <img src="{% static 'images/ugc.png' %}" alt="UGC Logo" style="width: 180px; height: auto;">
-                </a>
-                <p>UGC understands Ghana's workforce dynamics, offering flexible education for corporate executives and entrepreneurs through its specialized Graduate Schools.</p>
+        <div class="footer-grid-new">
+            <div>
+                <h4 class="footer-title">Contact Us</h4>
+                <div class="footer-text" style="display: flex; flex-direction: column; gap: 16px;">
+                    <p style="color: white; font-weight: 700;">ACCRA <span class="illuminate-gold">BUSINESS</span> SCHOOL</p>
+                    <p>Spintex-RD, Christ Square</p>
+                    <p>PMB CT 170 Cantoments, Accra-Ghana</p>
+                    <p>info@abs.edu.gh</p>
+                    <p>+233 263 888 555</p>
+                    <p>+233 263 888 666</p>
+                </div>
             </div>
-            <div class="footer-col">
-                <h4>Academic Portals</h4>
-                <ul>
-                    <li><a href="#">Postgraduate Admissions</a></li>
-                    <li><a href="#">Graduation Portal</a></li>
+            <div>
+                <h4 class="footer-title">Resources</h4>
+                <ul class="footer-links">
+                    <li><a href="#">· Webmail</a></li>
+                    <li><a href="#">· Online Library</a></li>
+                    <li><a href="#">· Student Handbook</a></li>
+                    <li><a href="#">· Plagiarism Policy</a></li>
+                    <li><a href="#">· Institutional Policies</a></li>
+                    <li><a href="{% url 'public_enquiry' %}">· Support Desk</a></li>
                 </ul>
             </div>
-            <div class="footer-col">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="/">Support Desk</a></li>
-                    <li><a href="#">Staff Email</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Campus Location</h4>
-                <p>Christ Square, Spintex Road<br>Accra, Ghana</p>
-                <p style="margin-top: 10px; color: var(--gold);">Email: info@ugc.edu.gh</p>
+            <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                <h4 class="footer-title">ABS Socials</h4>
+                <div class="social-row">
+                    <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" class="social-btn"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="social-btn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#" class="social-btn"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+                <img src="{% static 'images/ugc.png' %}" alt="Logo" style="height: 80px; opacity: 0.5;">
             </div>
         </div>
-        <div class="copyright">
-            &copy; 2026 UNIVERSITY OF GOLD COAST (UGC). ALL RIGHTS RESERVED.
+        <div class="footer-bottom">
+            <p>&copy; 2026 ACCRA <span class="illuminate-gold">BUSINESS</span> SCHOOL. ALL RIGHTS RESERVED.</p>
+            <p>Developed by <span style="color: white; font-weight: 700;">Nana Yaw Kwatia Awuah - 0560708067</span> <span class="animate-beat">❤️</span></p>
         </div>
     </div>
 </footer>
@@ -348,7 +422,7 @@
 <script>
     let currentTicketId = null;
     let activeParentId = null;
-    let messagesMap = {}; // Storage for full message texts
+    let messagesMap = {}; 
 
     function getCookie(name) {
         let cookieValue = null;
@@ -403,13 +477,11 @@
             updateStepper(data.status);
 
             chatThread.innerHTML = ''; 
-            messagesMap = {}; // Reset map
+            messagesMap = {}; 
 
             if (data.thread && data.thread.length > 0) {
                 data.thread.forEach((msg, index) => {
-                    // Store message in map for the reply context
                     messagesMap[msg.id] = msg.message;
-
                     const typeClass = msg.is_staff ? 'staff' : 'user';
                     const label = (index === 0 && !msg.is_staff) ? "Original Enquiry" : (msg.is_staff ? "UGC OFFICER" : "YOU");
                     
@@ -445,12 +517,9 @@
         activeParentId = id;
         const fullText = messagesMap[id] || "";
         const previewText = fullText.substring(0, 100) + (fullText.length > 100 ? "..." : "");
-        
         document.getElementById('replyIndicator').style.display = 'block';
         document.getElementById('replyPreviewText').innerText = `"${previewText}"`;
         document.getElementById('userReplyText').focus();
-        
-        // Scroll to the reply box
         document.getElementById('userReplySection').scrollIntoView({ behavior: 'smooth' });
     }
 
