@@ -9,9 +9,10 @@
         --primary-bg: #f4f7f6;
         --card-bg: #ffffff;
         --text-main: #333333;
-        --accent: #c5a059; /* Your Gold Color */
+        --accent: #c5a059;
         --sidebar-bg: #1a1a1a;
         --border-color: #dddddd;
+        --black-rich: #0a0a0a;
     }
 
     [data-theme="dark"] {
@@ -24,7 +25,7 @@
     }
 
     /* 2. GLOBAL LAYOUT OVERRIDES */
-    body { background-color: var(--primary-bg) !important; color: var(--text-main) !important; transition: 0.3s; }
+    body { background-color: var(--primary-bg) !important; color: var(--text-main) !important; transition: 0.3s; margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
     
     #header { 
         background: var(--sidebar-bg) !important; 
@@ -32,9 +33,8 @@
         padding: 10px 20px;
     }
 
-    #content { background: var(--primary-bg) !important; }
+    #content { background: var(--primary-bg) !important; flex: 1; padding-bottom: 40px; }
 
-    /* Sidebar Styling */
     #nav-sidebar { 
         background: var(--sidebar-bg) !important; 
         border-right: 1px solid var(--border-color) !important; 
@@ -47,7 +47,6 @@
         text-transform: uppercase;
     }
 
-    /* Buttons & Links */
     .button, input[type=submit], .submit-row a.deletelink {
         background: var(--accent) !important;
         color: #000 !important;
@@ -55,39 +54,162 @@
         border-radius: 4px !important;
     }
 
-    /* 3. THE TOGGLE BUTTON POSITIONING */
-    .theme-switch-wrapper {
+    /* 3. INCORPORATED FOOTER STYLES */
+    .abs-footer {
+        background-color: var(--black-rich);
+        color: white;
+        padding: 60px 20px 30px 20px;
+        border-top: 1px solid rgba(197, 160, 89, 0.2);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        clear: both;
+    }
+
+    .footer-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 40px;
+        max-width: 1200px;
+        margin: 0 auto 40px auto;
+    }
+
+    .footer-h4 {
+        color: var(--accent);
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-bottom: 25px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .footer-text { color: #9ca3af; font-size: 0.875rem; line-height: 1.6; }
+    .illuminate-gold { color: var(--accent); font-weight: bold; }
+    
+    .footer-links { list-style: none; padding: 0; margin: 0; }
+    .footer-links li { margin-bottom: 12px; }
+    .footer-links a { color: #9ca3af; text-decoration: none; transition: 0.3s; font-size: 0.875rem; }
+    .footer-links a:hover { color: var(--accent); padding-left: 5px; }
+
+    .social-icons { display: flex; gap: 12px; margin-bottom: 20px; }
+    .social-btn {
+        background: #111827;
+        width: 38px;
+        height: 38px;
         display: flex;
         align-items: center;
-        float: right;
-        margin-top: 10px;
+        justify-content: center;
+        border-radius: 4px;
+        color: white;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+    .social-btn:hover { background: var(--accent); color: black; transform: translateY(-3px); }
+
+    .footer-bottom {
+        border-top: 1px solid #1f2937;
+        padding-top: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        font-size: 10px;
+        letter-spacing: 2px;
+        color: #6b7280;
+    }
+
+    .animate-beat {
+        display: inline-block;
+        color: #ff0000;
+        animation: heartBeat 1.2s infinite;
+        font-size: 14px;
+        margin-left: 5px;
+    }
+
+    @keyframes heartBeat {
+        0% { transform: scale(1); }
+        15% { transform: scale(1.3); }
+        30% { transform: scale(1); }
+        45% { transform: scale(1.3); }
+        70% { transform: scale(1); }
+    }
+
+    /* Ensure user-tools button styling */
+    #user-tools button:hover {
+        background-color: var(--accent) !important;
+        color: black !important;
     }
 </style>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 {% endblock %}
 
 {% block footer %}
-{{ block.super }}
-<script>
-    // Logic to persist the theme across all admin pages
-    document.addEventListener('DOMContentLoaded', function() {
-        const currentTheme = localStorage.getItem('theme') || 'dark';
-        document.documentElement.setAttribute('data-theme', currentTheme);
+    <footer class="bg-black-rich text-white pt-24 pb-8 border-t border-gold/10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-3 gap-12 mb-16">
+                <div data-aos="fade-up">
+                    <h4 class="text-xl font-bold mb-6 text-gold">Contact Us</h4>
+                    <div class="space-y-4 text-gray-400 text-sm">
+                        <p class="font-bold text-white">Accra <span class="illuminate-gold">BUSINESS</span> School</p>
+                        <p>Spintex-RD, Christ Square</p>
+                        <p>PMB CT 170 Cantoments, Accra-Ghana</p>
+                        <p>info@abs.edu.gh</p>
+                        <p>+233 263 888 555</p>
+                        <p>+233 263 888 666</p>
+                    </div>
+                </div>
+                <div data-aos="fade-up" data-aos-delay="100">
+                    <h4 class="text-xl font-bold mb-6 text-gold">Resources</h4>
+                    <ul class="space-y-3 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-gold transition">· Webmail</a></li>
+                        <li><a href="#" class="hover:text-gold transition">· Online Library</a></li>
+                        <li><a href="#" class="hover:text-gold transition">· Student Handbook</a></li>
+                        <li><a href="#" class="hover:text-gold transition">· Plagiarism Policy</a></li>
+                        <li><a href="#" class="hover:text-gold transition">· Institutional Policies</a></li>
+                        <li><a href="#" class="hover:text-gold transition">· Support Desk</a></li>
+                    </ul>
+                </div>
+                <div data-aos="fade-up" data-aos-delay="200" class="flex flex-col items-start">
+                    <h4 class="text-xl font-bold mb-6 text-gold">ABS Socials</h4>
+                    <div class="flex flex-wrap gap-3 mb-10">
+                        <a href="#" class="social-btn bg-gray-900 p-2 rounded w-10 h-10 flex items-center justify-center"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-btn bg-gray-900 p-2 rounded w-10 h-10 flex items-center justify-center"><i class="fab fa-x-twitter"></i></a>
+                        <a href="#" class="social-btn bg-gray-900 p-2 rounded w-10 h-10 flex items-center justify-center"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-btn bg-gray-900 p-2 rounded w-10 h-10 flex items-center justify-center"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-btn bg-gray-900 p-2 rounded w-10 h-10 flex items-center justify-center"><i class="fab fa-youtube"></i></a>
+                    </div>
+                    <img src="{% static 'images/1.png' %}" alt="Logo" class="h-20 opacity-50">
+                </div>
+            </div>
+            <div class="pt-8 border-t border-gray-900 flex flex-col md:flex-row justify-between items-center text-[10px] uppercase tracking-widest text-gray-500">
+                <p>&copy; 2026 ACCRA <span class="illuminate-gold">BUSINESS</span> SCHOOL. ALL RIGHTS RESERVED.</p>
+                <p class="mt-4 md:mt-0">Developed by <span class="text-white font-bold">Nana Yaw Kwatia Awuah - 0560708067</span> <span class="animate-beat text-xs">❤️</span></p>
+            </div>
+        </div>
+    </footer>
 
-        // Add a toggle button to the header if it doesn't exist
-        const header = document.querySelector('#user-tools');
-        if (header) {
-            const btn = document.createElement('button');
-            btn.innerHTML = currentTheme === 'dark' ? '☀️' : '🌙';
-            btn.style.cssText = "background:none; border:1px solid var(--accent); color:var(--accent); cursor:pointer; margin-left:15px; border-radius:4px;";
-            btn.onclick = function() {
-                let theme = document.documentElement.getAttribute('data-theme');
-                let newTheme = theme === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-                this.innerHTML = newTheme === 'dark' ? '☀️' : '🌙';
-            };
-            header.appendChild(btn);
-        }
-    });
-</script>
+    {{ block.super }}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+
+            const header = document.querySelector('#user-tools');
+            if (header) {
+                const btn = document.createElement('button');
+                btn.innerHTML = currentTheme === 'dark' ? '☀️' : '🌙';
+                btn.style.cssText = "background:none; border:1px solid var(--accent); color:var(--accent); cursor:pointer; margin-left:15px; border-radius:4px; padding: 2px 8px;";
+                btn.onclick = function() {
+                    let theme = document.documentElement.getAttribute('data-theme');
+                    let newTheme = theme === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', newTheme);
+                    localStorage.setItem('theme', newTheme);
+                    this.innerHTML = newTheme === 'dark' ? '☀️' : '🌙';
+                };
+                header.appendChild(btn);
+            }
+        });
+    </script>
 {% endblock %}

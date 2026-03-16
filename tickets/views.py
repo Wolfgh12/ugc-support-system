@@ -11,6 +11,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from django.db.models import OuterRef, Subquery
 
+# NEW IMPORT FOR IFRAME FIX
+from django.views.decorators.clickjacking import xframe_options_exempt
+
 # Import your models
 from .models import Ticket, StaffProfile, StudentMaster, StaffMaster, TicketMessage
 
@@ -29,14 +32,17 @@ def send_email_async(subject, email_body, recipient_list, fail_silently=False):
 
 # --- PUBLIC VIEWS ---
 
+@xframe_options_exempt
 def home(request):
     return render(request, 'index.html')
 
+@xframe_options_exempt
 def public_enquiry(request):
     return render(request, 'public_enquiry.html', {
         'public_depts': Ticket.DEPARTMENT_CHOICES
     })
 
+@xframe_options_exempt
 def track_status(request):
     return render(request, 'track_enquiry.html')
 
@@ -268,14 +274,9 @@ def staff_dashboard(request):
     if not request.user.is_authenticated:
         return redirect('login')
     
-    # --- FIXED LOGIC: Renaming annotations to avoid model conflicts ---
-    # 1. Subquery for the last message overall
     last_msg_subquery = TicketMessage.objects.filter(ticket=OuterRef('pk')).order_by('-created_at')
-    
-    # 2. Subquery for the latest staff reply
     last_staff_subquery = TicketMessage.objects.filter(ticket=OuterRef('pk'), is_staff=True).order_by('-created_at')
 
-    # Use unique names like 'ann_message' instead of 'reply_message'
     tickets_base = Ticket.objects.annotate(
         ann_message=Subquery(last_msg_subquery.values('message')[:1]),
         ann_is_staff=Subquery(last_msg_subquery.values('is_staff')[:1]),
@@ -304,13 +305,9 @@ def staff_dashboard(request):
         except StaffProfile.DoesNotExist:
             return redirect('home')
 
-    # Mapping annotated values to the attributes expected by dashboard.html
     for t in queryset:
-        # If last message was NOT by staff, mark as USER (Triggers 'NEW' badge)
         t.last_reply_by = 'USER' if t.ann_is_staff == False else 'STAFF'
-        # Assign the latest message text
         t.reply_message = t.ann_message
-        # Assign the latest staff name
         t.last_staff_name = t.ann_staff_name
 
     return render(request, 'dashboard.html', {

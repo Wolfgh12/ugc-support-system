@@ -1,23 +1,37 @@
 import os
+import environ
 from pathlib import Path
+
+# --- INITIALIZE ENVIRON ---
+env = environ.Env(
+    DEBUG=(bool, False)
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# --- MOVE THIS UP: LOAD THE FILE FIRST ---
+ENV_FILE = BASE_DIR / ".env"
+if not ENV_FILE.exists():
+    ENV_FILE = BASE_DIR / "core" / ".env"
+
+# We must read the file BEFORE we try to use env() for anything
+environ.Env.read_env(str(ENV_FILE))
+
+# --- PULL SENSITIVE DATA FROM .ENV ---
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ugc-project-key-2026'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'helpdesk.edu.ugc.gh']
 
 # --- CRITICAL FIX FOR FETCH REQUESTS ---
 APPEND_SLASH = True
 CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000', 'http://localhost:8000']
 
 # Application definition
-# NOTICE: 'tickets' is placed ABOVE 'django.contrib.admin' to allow template overriding
 INSTALLED_APPS = [
     'tickets', 
     'django.contrib.admin',
@@ -35,7 +49,6 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -43,7 +56,6 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # Ensures BASE_DIR/templates is checked first
         'DIRS': [BASE_DIR / 'templates'], 
         'APP_DIRS': True,
         'OPTIONS': {
@@ -60,11 +72,12 @@ TEMPLATES = [
 WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
+# We use env.db() but provide a default URL as a safety net
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': env.db(
+        'DATABASE_URL', 
+        default='postgres://postgres:admin1234@127.0.0.1:5433/ugc_db'
+    )
 }
 
 # Password validation
@@ -114,3 +127,15 @@ UGC_DEPARTMENTS = {
 EMAIL_TIMEOUT = 10 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# --- SECURITY & TIMEOUT ---
+EMAIL_TIMEOUT = 10 
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# --- THE IFRAME FIX ---
+X_FRAME_OPTIONS = 'ALLOW-FROM http://127.0.0.1:8000' 
+
+# Add this to help with CSRF issues between ports
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SAMESITE = 'Lax'

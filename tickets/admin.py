@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.utils.html import format_html
+from import_export import resources, fields
+from import_export.admin import ExportActionMixin
 from .models import Ticket, StaffProfile, StudentMaster, StaffMaster, TicketMessage
 
 # --- 1. MASTER LIST MANAGEMENT ---
@@ -34,7 +36,6 @@ class UserAdmin(BaseUserAdmin):
     def colored_department(self, instance):
         dept = instance.staffprofile.department if hasattr(instance, 'staffprofile') else "No Dept"
         color = "#c5a059" if dept == "Super Command" else "#888"
-        # FIX: Pass color and dept as arguments
         return format_html('<span style="color: {}; font-weight: bold;">{}</span>', color, dept)
     
     colored_department.short_description = 'Department'
@@ -52,10 +53,25 @@ class TicketMessageInline(admin.TabularInline):
     verbose_name = "Conversation Message"
     verbose_name_plural = "Conversation Thread"
 
-# --- 4. UPDATED TICKET ADMIN ---
+# --- 4. EXPORT RESOURCE ---
+
+class TicketResource(resources.ModelResource):
+    # Creating separate fields for the export columns
+    ticket_id = fields.Field(attribute='formatted_id', column_name='Ticket ID')
+    subject = fields.Field(attribute='subject', column_name='Subject')
+    latest_reply = fields.Field(attribute='last_reply_by', column_name='Latest Reply')
+
+    class Meta:
+        model = Ticket
+        # Exclude 'Action' by listing only database/property fields here
+        fields = ('ticket_id', 'name', 'email', 'user_type', 'subject', 'status', 'department', 'latest_reply', 'created_at')
+        export_order = ('ticket_id', 'name', 'email', 'user_type', 'subject', 'status', 'department', 'latest_reply', 'created_at')
+
+# --- 5. UPDATED TICKET ADMIN ---
 
 @admin.register(Ticket)
-class TicketAdmin(admin.ModelAdmin):
+class TicketAdmin(ExportActionMixin, admin.ModelAdmin):
+    resource_class = TicketResource
     list_display = ('formatted_id', 'name', 'user_type', 'colored_status', 'colored_reply_by', 'colored_dept', 'id_verified', 'updated_at')
     list_filter = ('user_type', 'department', 'status', 'last_reply_by', 'created_at')
     search_fields = ('name', 'subject', 'email', 'student_id', 'staff_id')
@@ -66,7 +82,6 @@ class TicketAdmin(admin.ModelAdmin):
     def colored_reply_by(self, obj):
         """Highlights USER replies in Gold."""
         if obj.last_reply_by == "USER":
-            # FIX: Explicitly pass the label text
             return format_html(
                 '<span style="background-color: #c5a059; color: white; padding: 3px 7px; border-radius: 3px; font-weight: bold;">{}</span>',
                 "NEW REPLY"
@@ -79,7 +94,6 @@ class TicketAdmin(admin.ModelAdmin):
     def colored_status(self, obj):
         colors = {'Open': '#28a745', 'In-Progress': '#ffc107', 'Resolved': '#dc3545'}
         color = colors.get(obj.status, '#888')
-        # FIX: Pass all three placeholders (color, border-color, text)
         return format_html(
             '<strong style="color: {}; border: 1px solid {}; padding: 2px 8px; border-radius: 4px;">{}</strong>',
             color, color, obj.status
@@ -87,7 +101,6 @@ class TicketAdmin(admin.ModelAdmin):
     colored_status.short_description = 'Status'
 
     def colored_dept(self, obj):
-        # FIX: Pass obj.department as argument
         return format_html('<span style="color: #c5a059; font-weight: bold;">#{}</span>', obj.department)
     colored_dept.short_description = 'Dept'
 
@@ -101,12 +114,10 @@ class TicketAdmin(admin.ModelAdmin):
 
     ordering = ('-updated_at',)
 
-# --- 5. STANDALONE PROFILE VIEW ---
+# --- 6. STANDALONE PROFILE VIEW ---
 
 @admin.register(StaffProfile)
 class StaffProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'department', 'role', 'staff_email')
     search_fields = ('user__username', 'department', 'staff_email')
     list_filter = ('department', 'role')
-
-    
