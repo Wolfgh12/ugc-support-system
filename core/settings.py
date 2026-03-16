@@ -25,11 +25,17 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'helpdesk.edu.ugc.gh']
+# --- UPDATED HOSTS ---
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'helpdesk.edu.ugc.gh', 'helpdesk.edu.gh.com']
 
 # --- CRITICAL FIX FOR FETCH REQUESTS ---
 APPEND_SLASH = True
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000', 'http://localhost:8000']
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:8000', 
+    'http://localhost:8000', 
+    'https://helpdesk.edu.gh.com', 
+    'http://helpdesk.edu.gh.com'
+]
 
 # Application definition
 INSTALLED_APPS = [
@@ -107,9 +113,9 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-# Your Verified Gmail
-EMAIL_HOST_USER = 'nanayeezy@gmail.com' 
-EMAIL_HOST_PASSWORD = 'skctccwpxkuqqzpj' 
+# Pulling from .env for security
+EMAIL_HOST_USER = env('EMAIL_USER') 
+EMAIL_HOST_PASSWORD = env('EMAIL_PASSWORD') 
 DEFAULT_FROM_EMAIL = f"UGC Support <{EMAIL_HOST_USER}>"
 
 # --- UNIVERSITY NOTIFICATION SETTINGS ---
@@ -122,11 +128,6 @@ UGC_DEPARTMENTS = {
     'HR': 'hr@ugc.edu.gh',
     'Student Support': 'support@ugc.edu.gh',
 }
-
-# --- SECURITY & TIMEOUT ---
-EMAIL_TIMEOUT = 10 
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # --- SECURITY & TIMEOUT ---
 EMAIL_TIMEOUT = 10 
