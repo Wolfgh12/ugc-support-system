@@ -19,22 +19,21 @@ if not ENV_FILE.exists():
 environ.Env.read_env(str(ENV_FILE))
 
 # --- PULL SENSITIVE DATA FROM .ENV ---
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
 # --- UPDATED HOSTS ---
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'helpdesk.edu.ugc.gh', 'helpdesk.edu.gh.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'helpdesk.edu.ugc.gh', 'helpdesk.edu.gh']
 
 # --- CRITICAL FIX FOR FETCH REQUESTS ---
 APPEND_SLASH = True
 CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:8000', 
     'http://localhost:8000', 
-    'https://helpdesk.edu.gh.com', 
-    'http://helpdesk.edu.gh.com'
+    'https://helpdesk.edu.ugc.gh',  
+    'http://helpdesk.edu.ugc.gh',   
+    'https://helpdesk.edu.gh', 
+    'http://helpdesk.edu.gh'
 ]
 
 # Application definition
@@ -80,7 +79,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
-# We use env.db() but provide a default URL as a safety net
 DATABASES = {
     'default': env.db(
         'DATABASE_URL', 
@@ -109,7 +107,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# WhiteNoise storage to serve compressed files
+# WhiteNoise storage
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # --- EMAIL NOTIFICATION CONFIGURATION ---
@@ -118,7 +116,6 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-# Pulling from .env for security
 EMAIL_HOST_USER = env('EMAIL_USER') 
 EMAIL_HOST_PASSWORD = env('EMAIL_PASSWORD') 
 DEFAULT_FROM_EMAIL = f"UGC Support <{EMAIL_HOST_USER}>"
@@ -136,13 +133,10 @@ UGC_DEPARTMENTS = {
 
 # --- SECURITY & TIMEOUT ---
 EMAIL_TIMEOUT = 10 
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# --- THE IFRAME FIX ---
 X_FRAME_OPTIONS = 'DENY' 
 
-# Add this to help with CSRF issues between ports
+# CSRF settings
 CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SAMESITE = 'Lax'
 
@@ -154,3 +148,9 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
+else:
+    # Safety switch for local development
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
+    SECURE_HSTS_SECONDS = 0
